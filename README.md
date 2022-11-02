@@ -44,5 +44,3 @@ Podaci su, uz sitne preinake, preuzeti s web stranice https://www.edamam.com/.
 
 # Licencija
 MIT licencija omogućava korištenje repozitorija bez ikakvih restrikcija osim da obavijest o autorskim pravima i dopuštenjima navedenim u licenciji mora biti uključena u sve kopije ili znatne dijelove repozitorija. 
-
-
