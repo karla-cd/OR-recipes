@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Recipes</title>
+        <meta name="title" content="Recipes">
+        <meta name="description" content="Repozitorij laboratorijskih vježbi iz kolegija Otvoreno računarstvo">
+        <meta name="author" content="Karla Ćosić-Dragan">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Manrope">
+        <script src="FileSaver.js"></script>
+        <script src="client.js"></script>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Recipes</h1>
+        </div>
+        <div class="about">
+            <h2>O repozitoriju</h2>
+            <p>
+                <b>Autor:</b> Karla Ćosić-Dragan<br/>
+                <b>Verzija:</b> 1.0<br/>
+                <b>Jezik:</b> Engleski<br/><br/>
+            </p>
+            <h2>O podacima</h2>
+            <b>Recipe</b><br/><br/>
+            <table id="about-table">
+                <tr>
+                    <th>Atribut</th>
+                    <th>Opis</th>
+                    <th>Tip podatka</th>
+                </tr>
+                <tr>
+                    <th>Name</th>
+                    <th>Ime recepta</th>
+                    <th>string</th>
+                </tr>
+                <tr>
+                    <th>Rating</th>
+                    <th>Ocjena recepta</th>
+                    <th>number</th>
+                </tr>
+                <tr>
+                    <th>Ease of preparation</th>
+                    <th>Jednostavnost pripreme recepta</th>
+                    <th>string</th>
+                </tr>
+                <tr>
+                    <th>Type</th>
+                    <th>Tip jela na koje se recept odnosi</th>
+                    <th>string</th>
+                </tr>
+                <tr>
+                    <th>Preparation time</th>
+                    <th>Vrijeme potrebno za pripremu jela po receptu u minutama</th>
+                    <th>number</th>
+                </tr>
+                <tr>
+                    <th>Ingredients</th>
+                    <th>Sastojci potrebni za pripremu jela po receptu</th>
+                    <th>Ingredient objekt</th>
+                </tr>
+                <tr>
+                    <th>Calories</th>
+                    <th>Broj kalorija jela</th>
+                    <th>number</th>
+                </tr>
+                <tr>
+                    <th>Daily value</th>
+                    <th>Postotak dnevnog unosa</th>
+                    <th>string</th>
+                </tr>
+                <tr>
+                    <th>Servings</th>
+                    <th>Broj porcija jela</th>
+                    <th>number</th>
+                </tr>
+                <tr>
+                    <th>Web Source</th>
+                    <th>Izvor</th>
+                    <th>string</th>
+                </tr>
+            </table><br/><br/>
+            <b>Ingredient</b><br/><br/>
+            <table id="about-table">
+                <tr>
+                    <th>Atribut</th>
+                    <th>Opis</th>
+                    <th>Tip podatka</th>
+                </tr>
+                <tr>
+                    <th>Amount</th>
+                    <th>Količina sastojka</th>
+                    <th>string</th>
+                </tr>
+                <tr>
+                    <th>Ingredient</th>
+                    <th>Ime sastojka</th>
+                    <th>string</th>
+                </tr>
+            </table><br/><br/>
+            <h2>Izvor</h2>
+            <p>
+                Podaci su, uz sitne preinake, preuzeti s web stranice https://www.edamam.com/.
+            </p><br/><br/>
+            <h2>Licencija</h2>
+            <p>
+                MIT licencija omogućava korištenje repozitorija bez ikakvih restrikcija osim da obavijest o autorskim pravima i dopuštenjima navedenim u licenciji mora biti uključena u sve kopije ili znatne dijelove repozitorija.
+            </p>
+            <br/><br/>
+        </div>
+        <h2 style="margin-left:50px;">Podaci</h2>
+        <form onsubmit="getSearchResult();return false">
+            <select id="attribute">
+                <option>Sva polja (wild card)</option>
+                <option>Name</option>
+                <option>Ease of preparation</option>
+                <option>Type</option>
+                <option>Web source</option>
+            </select>
+            <input type="text" id="searchValue">
+            <input type="submit" value="Search">
+        </form>
+        <div class="export">
+            <a onclick="saveJson()">Export to JSON</a>
+            <a onclick="saveCsv()">Export to CSV</a>
+        </div>
+        <table id="table"></table>
+    </body>
+</html>
