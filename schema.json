@@ -1,0 +1,97 @@
+{
+  "$id": "https://github.com/karla-cd/OR-recipes/blob/main/schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "Recipes",
+  "description": "An array of recipes",
+  "type": "object",
+  "items": {
+    "title": "Recipe",
+    "description": "Objekt koji sadrži podatke o receptu",
+    "type": "object",
+    "required": [
+      "Name",
+      "Rating",
+      "Ease of preparation",
+      "Type",
+      "Preparation time",
+      "Ingredients",
+      "Calories",
+      "Daily value",
+      "Servings",
+      "Web Source"
+    ],
+    "properties": {
+      "Name": {
+        "title": "Name",
+        "description": "Ime recepta",
+        "type": "string"
+      },
+      "Rating": {
+        "title": "Rating",
+        "description": "Ocjena recepta",
+        "type": "number"
+      },
+      "Ease of preparation": {
+        "title": "Ease of preparation",
+        "description": "Jednostavnost pripreme recepta",
+        "type": "string"
+      },
+      "Type": {
+        "title": "Type",
+        "description": "Tip jela na koje se recept odnosi",
+        "type": "string"
+      },
+      "Preparation time": {
+        "title": "Preparation time",
+        "description": "Vrijeme potrebno za pripremu jela po receptu u minutama",
+        "type": "number"
+      },
+      "Ingredients": {
+        "title": " Ingredients",
+        "description": "Sastojci potrebni za pripremu jela po receptu",
+        "type": "array",
+        "items": {
+          "title": "Ingredient",
+          "description": "Sastojak",
+          "type": "object",
+          "required": [
+            "Amount",
+            "Ingredient"
+          ],
+          "properties": {
+            "Amount": {
+              "title": "Amount",
+              "description": "Količina sastojka",
+              "type": "string"
+            },
+            "Ingredient": {
+              "title": "Ingredient",
+              "description": "Ime sastojka",
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Calories": {
+        "title": "Calories ",
+        "description": "Broj kalorija jela",
+        "type": "number"
+      },
+      "Daily value": {
+        "title": "Daily value",
+        "description": "Postotak dnevnog unosa",
+        "type": "string"
+      },
+      "Servings": {
+        "title": "Servings",
+        "description": "Broj porcija jela",
+        "type": "number"
+      },
+      "Web Source": {
+        "title": "Web Source",
+        "description": "Izvor",
+        "type": "string"
+      }
+    }
+  }
+}
