@@ -1,0 +1,117 @@
+{
+	"openapi": "3.0.3",
+	"info": {
+		"title": "Recipes",
+		"version": "1.2",
+		"contact": {
+			"email": "karla.cosic-dragan@fer.hr"
+		}
+	},
+	"paths": {
+		"/recipes": {
+			"get": {
+				"summary": "Get resources from a collection of recipes",
+				"description": "Returns whole collection of recipes",
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "http://localhost:8080/recipes"
+						}
+					}
+				}
+			}, 
+			"post": {
+				"summary": "Add resource to the collection",
+				"description": "Returns a new resource",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "recipe",
+						"in": "request body",
+						"description": "Recipe object JSON",
+						"required": true,
+						"type": "object",
+						"format": "JSON"
+					}
+				],
+				"responses": {
+					"201": {
+						"description": "Created"
+					}
+				}
+			}
+		}, 
+		"/recipes/{id}": {
+			"get": {
+				"summary": "Get resource from collection of recipes by id",
+				"description": "Returns a single collection resource",
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"description": "ID of the resource",
+						"required": true,
+						"type": "String"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "http://localhost:8080/recipes"
+						}
+					},
+					"404": {
+						"description": "Not Found"
+					}
+				}
+			},
+			"put": {
+				"summary": "Update resource from collection of recipes by id",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"description": "ID of the resource",
+						"required": true,
+						"type": "String"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "http://localhost:8080/recipes"
+						}
+					}
+				}
+			}, 
+			"delete": {
+				"summary": "Delete resource from collection of recipes by id",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"description": "ID of the resource",
+						"required": true,
+						"type": "String"
+					}
+				],
+				"responses": {
+					"202": {
+						"description": "Accepted"
+					}
+				}
+			}
+		}
+	}
+}

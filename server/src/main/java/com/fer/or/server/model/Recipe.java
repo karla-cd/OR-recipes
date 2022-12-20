@@ -43,4 +43,28 @@ public class Recipe {
 
     @Field("Web Source")
     private String webSource;
+
+    public Recipe(
+            String name,
+            int rating,
+            String easeOfPreparation,
+            String type,
+            int preparationTime,
+            List<Ingredient> ingredients,
+            int calories,
+            String dailyValue,
+            int servings,
+            String webSource)
+    {
+        this.name = name;
+        this.rating = rating;
+        this.easeOfPreparation = easeOfPreparation;
+        this.type = type;
+        this.preparationTime = preparationTime;
+        this.ingredients = ingredients;
+        this.calories = calories;
+        this.dailyValue = dailyValue;
+        this.servings = servings;
+        this.webSource = webSource;
+    }
 }
