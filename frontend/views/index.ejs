@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Recipes</title>
+        <meta name="title" content="Recipes">
+        <meta name="description" content="Repozitorij laboratorijskih vježbi iz kolegija Otvoreno računarstvo">
+        <meta name="author" content="Karla Ćosić-Dragan">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Manrope">
+        <style>
+            body {
+                font-family: 'Manrope';
+                margin: 0;
+            }
+            .header {
+                overflow: hidden;
+                background-color: hotpink;
+                color: white;
+                padding: 20px 10px;
+            }
+            .login a {
+                font-family: inherit;
+                background-color: #96999c;
+                color: white;
+                padding: 14px 20px;
+                margin: 8px 0;
+                border: none;
+                border-radius: 1vw;
+                cursor: pointer;
+            }
+            .header h1 {
+                float: left;
+                margin-left: 50px;
+                font-size: 23px;
+            }
+            .header a {
+                float: right;
+                margin-left: 10px;
+                margin-top: 10px;
+                padding: 12px 20px;
+                font-size: 13px;
+                color: white;
+                background-color: #96999c;
+                border: 1px solid #96999c;
+                border-radius: 1vw;
+            }
+            form {
+                margin-left: 50px;
+                margin-bottom: 20px;
+            }
+            select {
+                font-family: inherit;
+                padding: 12px 20px;
+                margin: 8px 0;
+                border: 1px solid #ccc;
+                border-radius: 1vw;
+            }
+            input[type=text] {
+                font-family: inherit;
+                padding: 12px 20px;
+                margin: 8px 0;
+                border: 1px solid #ccc;
+                border-radius: 1vw;
+            }
+            input[type=submit] {
+                font-family: inherit;
+                background-color: #96999c;
+                color: white;
+                padding: 14px 20px;
+                margin: 8px 0;
+                border: none;
+                border-radius: 1vw;
+                cursor: pointer;
+            }
+            input[type=submit]:hover {
+                background-color: #bfc2c5;
+            }
+            .export {
+                margin-left: 50px;
+                margin-bottom: 50px;
+            }
+            .export a {
+                margin-top: 10px;
+                padding: 12px 20px;
+                font-size: 13px;
+                color: white;
+                background-color: #96999c;
+                border: 1px solid #96999c;
+                border-radius: 1vw;
+            }
+            .about {
+                margin-left: 50px;
+            }
+            #table {
+                margin-top: 20px;
+                margin-left: 50px;
+                margin-right: 50px;
+                margin-bottom: 100px;
+                border-collapse: collapse;
+            }
+            #about-table {
+                border-collapse: collapse;
+            }
+            th, td {
+                border: 1px solid #a09898;
+            }
+            tr:nth-child(even) {
+                background-color: rgb(255, 194, 224);
+            }
+            tr:nth-child(odd) {
+                background-color: rgb(255, 233, 244);
+            }
+        </style>
+        <script>                       
+            /*
+            * FileSaver.js
+            * A saveAs() FileSaver implementation.
+            *
+            * By Eli Grey, http://eligrey.com
+            *
+            * License : https://github.com/eligrey/FileSaver.js/blob/master/LICENSE.md (MIT)
+            * source  : http://purl.eligrey.com/github/FileSaver.js
+            */
+
+            // The one and only way of getting global scope in all environments
+            // https://stackoverflow.com/q/3277182/1008999
+            var _global = typeof window === 'object' && window.window === window
+            ? window : typeof self === 'object' && self.self === self
+            ? self : typeof global === 'object' && global.global === global
+            ? global
+            : this
+
+            function bom (blob, opts) {
+            if (typeof opts === 'undefined') opts = { autoBom: false }
+            else if (typeof opts !== 'object') {
+                console.warn('Deprecated: Expected third argument to be a object')
+                opts = { autoBom: !opts }
+            }
+
+            // prepend BOM for UTF-8 XML and text/* types (including HTML)
+            // note: your browser will automatically convert UTF-16 U+FEFF to EF BB BF
+            if (opts.autoBom && /^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(blob.type)) {
+                return new Blob([String.fromCharCode(0xFEFF), blob], { type: blob.type })
+            }
+            return blob
+            }
+
+            function download (url, name, opts) {
+            var xhr = new XMLHttpRequest()
+            xhr.open('GET', url)
+            xhr.responseType = 'blob'
+            xhr.onload = function () {
+                saveAs(xhr.response, name, opts)
+            }
+            xhr.onerror = function () {
+                console.error('could not download file')
+            }
+            xhr.send()
+            }
+
+            function corsEnabled (url) {
+            var xhr = new XMLHttpRequest()
+            // use sync to avoid popup blocker
+            xhr.open('HEAD', url, false)
+            try {
+                xhr.send()
+            } catch (e) {}
+            return xhr.status >= 200 && xhr.status <= 299
+            }
+
+            // `a.click()` doesn't work for all browsers (#465)
+            function click (node) {
+            try {
+                node.dispatchEvent(new MouseEvent('click'))
+            } catch (e) {
+                var evt = document.createEvent('MouseEvents')
+                evt.initMouseEvent('click', true, true, window, 0, 0, 0, 80,
+                                    20, false, false, false, false, 0, null)
+                node.dispatchEvent(evt)
+            }
+            }
+
+            // Detect WebView inside a native macOS app by ruling out all browsers
+            // We just need to check for 'Safari' because all other browsers (besides Firefox) include that too
+            // https://www.whatismybrowser.com/guides/the-latest-user-agent/macos
+            var isMacOSWebView = _global.navigator && /Macintosh/.test(navigator.userAgent) && /AppleWebKit/.test(navigator.userAgent) && !/Safari/.test(navigator.userAgent)
+
+            var saveAs = _global.saveAs || (
+            // probably in some web worker
+            (typeof window !== 'object' || window !== _global)
+                ? function saveAs () { /* noop */ }
+
+            // Use download attribute first if possible (#193 Lumia mobile) unless this is a macOS WebView
+            : ('download' in HTMLAnchorElement.prototype && !isMacOSWebView)
+            ? function saveAs (blob, name, opts) {
+                var URL = _global.URL || _global.webkitURL
+                // Namespace is used to prevent conflict w/ Chrome Poper Blocker extension (Issue #561)
+                var a = document.createElementNS('http://www.w3.org/1999/xhtml', 'a')
+                name = name || blob.name || 'download'
+
+                a.download = name
+                a.rel = 'noopener' // tabnabbing
+
+                // TODO: detect chrome extensions & packaged apps
+                // a.target = '_blank'
+
+                if (typeof blob === 'string') {
+                // Support regular links
+                a.href = blob
+                if (a.origin !== location.origin) {
+                    corsEnabled(a.href)
+                    ? download(blob, name, opts)
+                    : click(a, a.target = '_blank')
+                } else {
+                    click(a)
+                }
+                } else {
+                // Support blobs
+                a.href = URL.createObjectURL(blob)
+                setTimeout(function () { URL.revokeObjectURL(a.href) }, 4E4) // 40s
+                setTimeout(function () { click(a) }, 0)
+                }
+            }
+
+            // Use msSaveOrOpenBlob as a second approach
+            : 'msSaveOrOpenBlob' in navigator
+            ? function saveAs (blob, name, opts) {
+                name = name || blob.name || 'download'
+
+                if (typeof blob === 'string') {
+                if (corsEnabled(blob)) {
+                    download(blob, name, opts)
+                } else {
+                    var a = document.createElement('a')
+                    a.href = blob
+                    a.target = '_blank'
+                    setTimeout(function () { click(a) })
+                }
+                } else {
+                navigator.msSaveOrOpenBlob(bom(blob, opts), name)
+                }
+            }
+
+            // Fallback to using FileReader and a popup
+            : function saveAs (blob, name, opts, popup) {
+                // Open a popup immediately do go around popup blocker
+                // Mostly only available on user interaction and the fileReader is async so...
+                popup = popup || open('', '_blank')
+                if (popup) {
+                popup.document.title =
+                popup.document.body.innerText = 'downloading...'
+                }
+
+                if (typeof blob === 'string') return download(blob, name, opts)
+
+                var force = blob.type === 'application/octet-stream'
+                var isSafari = /constructor/i.test(_global.HTMLElement) || _global.safari
+                var isChromeIOS = /CriOS\/[\d]+/.test(navigator.userAgent)
+
+                if ((isChromeIOS || (force && isSafari) || isMacOSWebView) && typeof FileReader !== 'undefined') {
+                // Safari doesn't allow downloading of blob URLs
+                var reader = new FileReader()
+                reader.onloadend = function () {
+                    var url = reader.result
+                    url = isChromeIOS ? url : url.replace(/^data:[^;]*;/, 'data:attachment/file;')
+                    if (popup) popup.location.href = url
+                    else location = url
+                    popup = null // reverse-tabnabbing #460
+                }
+                reader.readAsDataURL(blob)
+                } else {
+                var URL = _global.URL || _global.webkitURL
+                var url = URL.createObjectURL(blob)
+                if (popup) popup.location = url
+                else location.href = url
+                popup = null // reverse-tabnabbing #460
+                setTimeout(function () { URL.revokeObjectURL(url) }, 4E4) // 40s
+                }
+            }
+            )
+
+            _global.saveAs = saveAs.saveAs = saveAs
+
+            if (typeof module !== 'undefined') {
+            module.exports = saveAs;
+            }
+
+
+            let recipesJsonArray = ""
+            let recipesCsvArray = ""
+
+            let response = fetch("http://localhost:8080/recipes")
+                .then(response => response.json())
+                .then(
+                    array => {
+                        var t = "<tr><th>Name</th><th>Rating</th><th>Ease of preparation</th><th>Type</th><th>Preparation time</th><th>Ingredients</th><th>Calories</th><th>Daily value</th><th>Servings</th><th>Web source</th></tr>"
+                        var csv = "Name;Rating;Ease of preparation;Type;Preparation time;Ingredients;Calories;Daily value;Servings;Web Source\n"
+                        for(var i = 0; i < array.length; i++) {
+                            var tr = "<tr>"
+                            tr += "<td>" + array[i].name + "</td>"
+                            tr += "<td>" + array[i].rating + "</td>"
+                            tr += "<td>" + array[i].easeOfPreparation + "</td>"
+                            tr += "<td>" + array[i].type + "</td>"
+                            tr += "<td>" + array[i].preparationTime + "</td>"
+                            tr += "<td>"
+                            for(var j = 0; j < array[i].ingredients.length; j++) {
+                                tr += array[i].ingredients[j].ingredient
+                                tr += " (" + array[i].ingredients[j].amount + ")"
+                                if(j != array[i].ingredients.length - 1)
+                                    tr += ", "
+                            }
+                            tr += "</td>"
+                            tr += "<td>" + array[i].calories + "</td>"
+                            tr += "<td>" + array[i].dailyValue + "</td>"
+                            tr += "<td>" + array[i].servings + "</td>"
+                            tr += "<td>" + array[i].webSource + "</td>"
+                            tr += "</tr>"
+                            t += tr
+                            csv += array[i].name + ";" + array[i].rating + ";" + array[i].easeOfPreparation + ";" + array[i].type + ";" + array[i].preparationTime + ";" + JSON.stringify(array[i].ingredients) + ";" + array[i].calories + ";" + array[i].dailyValue + ";" + array[i].servings + ";" + array[i].webSource + "\n"
+                        }
+                        document.getElementById("table").innerHTML = t;
+                        recipesJsonArray = JSON.stringify(array)
+                        recipesCsvArray = csv
+                    }
+                )
+
+            function getSearchResult() {
+                let response = fetch("http://localhost:8080/recipes/search", {
+                    method: "post",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ value: document.getElementById("searchValue").value, attribute: document.getElementById("attribute").value })
+                })
+                .then(response => response.json())
+                .then(array => {
+                        var t = "<tr><th>Name</th><th>Rating</th><th>Ease of preparation</th><th>Type</th><th>Preparation time</th><th>Ingredients</th><th>Calories</th><th>Daily value</th><th>Servings</th><th>Web source</th></tr>"
+                        var csv = "Name;Rating;Ease of preparation;Type;Preparation time;Ingredients;Calories;Daily value;Servings;Web Source\n"
+                        for(var i = 0; i < array.length; i++) {
+                            var tr = "<tr>"
+                            tr += "<td>" + array[i].name + "</td>"
+                            tr += "<td>" + array[i].rating + "</td>"
+                            tr += "<td>" + array[i].easeOfPreparation + "</td>"
+                            tr += "<td>" + array[i].type + "</td>"
+                            tr += "<td>" + array[i].preparationTime + "</td>"
+                            tr += "<td>"
+                            for(var j = 0; j < array[i].ingredients.length; j++) {
+                                tr += array[i].ingredients[j].ingredient
+                                tr += " (" + array[i].ingredients[j].amount + ")"
+                                if(j != array[i].ingredients.length - 1)
+                                    tr += ", "
+                            }
+                            tr += "</td>"
+                            tr += "<td>" + array[i].calories + "</td>"
+                            tr += "<td>" + array[i].dailyValue + "</td>"
+                            tr += "<td>" + array[i].servings + "</td>"
+                            tr += "<td>" + array[i].webSource + "</td>"
+                            tr += "</tr>"
+                            t += tr
+                            csv += array[i].name + ";" + array[i].rating + ";" + array[i].easeOfPreparation + ";" + array[i].type + ";" + array[i].preparationTime + ";" + JSON.stringify(array[i].ingredients) + ";" + array[i].calories + ";" + array[i].dailyValue + ";" + array[i].servings + ";" + array[i].webSource + "\n"
+                        }
+                        document.getElementById("table").innerHTML = t
+                        recipesJsonArray = JSON.stringify(array)
+                        recipesCsvArray = csv
+                    }
+                )
+            }
+
+            function saveJson() {
+                var blob = new Blob([recipesJsonArray], { type: "text/plain;charset=utf-8" });
+                saveAs(blob, "recipes.json");
+            }
+
+            function saveCsv() {
+                var blob = new Blob([recipesCsvArray], { type: "text/plain;charset=utf-8" });
+                saveAs(blob, "recipes.csv");
+            }
+        </script>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Recipes</h1>
+        </div>
+
+        <% if(user.isAuthenticated) { %>
+            <form action="/logout" method="get">
+                <input type="submit" value="Odjavi se <%= user.name %>">
+            </form>
+            <form action="/korisnicki-profil" method="get">
+                <input type="submit" value="Korisnički profil">
+            </form>
+            <form>
+                <input type="submit" value="Osvježi preslike" onclick="saveJson(); saveCsv()">
+            </form>
+          <% } else { %>  
+            <div class="login">
+                <a href="/log-in" title='Log in'>
+                    Prijavi se
+                </a>
+            </div>
+         <% } %>
+
+        <div class="about">
+            <h2>O repozitoriju</h2>
+            <p>
+                <b>Autor:</b> Karla Ćosić-Dragan<br/>
+                <b>Verzija:</b> 1.0<br/>
+                <b>Jezik:</b> Engleski<br/><br/>
+            </p>
+            <h2>O podacima</h2>
+            <b>Recipe</b><br/><br/>
+            <table id="about-table">
+                <tr>
+                    <th>Atribut</th>
+                    <th>Opis</th>
+                    <th>Tip podatka</th>
+                </tr>
+                <tr>
+                    <th>Name</th>
+                    <th>Ime recepta</th>
+                    <th>string</th>
+                </tr>
+                <tr>
+                    <th>Rating</th>
+                    <th>Ocjena recepta</th>
+                    <th>number</th>
+                </tr>
+                <tr>
+                    <th>Ease of preparation</th>
+                    <th>Jednostavnost pripreme recepta</th>
+                    <th>string</th>
+                </tr>
+                <tr>
+                    <th>Type</th>
+                    <th>Tip jela na koje se recept odnosi</th>
+                    <th>string</th>
+                </tr>
+                <tr>
+                    <th>Preparation time</th>
+                    <th>Vrijeme potrebno za pripremu jela po receptu u minutama</th>
+                    <th>number</th>
+                </tr>
+                <tr>
+                    <th>Ingredients</th>
+                    <th>Sastojci potrebni za pripremu jela po receptu</th>
+                    <th>Ingredient objekt</th>
+                </tr>
+                <tr>
+                    <th>Calories</th>
+                    <th>Broj kalorija jela</th>
+                    <th>number</th>
+                </tr>
+                <tr>
+                    <th>Daily value</th>
+                    <th>Postotak dnevnog unosa</th>
+                    <th>string</th>
+                </tr>
+                <tr>
+                    <th>Servings</th>
+                    <th>Broj porcija jela</th>
+                    <th>number</th>
+                </tr>
+                <tr>
+                    <th>Web Source</th>
+                    <th>Izvor</th>
+                    <th>string</th>
+                </tr>
+            </table><br/><br/>
+            <b>Ingredient</b><br/><br/>
+            <table id="about-table">
+                <tr>
+                    <th>Atribut</th>
+                    <th>Opis</th>
+                    <th>Tip podatka</th>
+                </tr>
+                <tr>
+                    <th>Amount</th>
+                    <th>Količina sastojka</th>
+                    <th>string</th>
+                </tr>
+                <tr>
+                    <th>Ingredient</th>
+                    <th>Ime sastojka</th>
+                    <th>string</th>
+                </tr>
+            </table><br/><br/>
+            <h2>Izvor</h2>
+            <p>
+                Podaci su, uz sitne preinake, preuzeti s web stranice https://www.edamam.com/.
+            </p><br/><br/>
+            <h2>Licencija</h2>
+            <p>
+                MIT licencija omogućava korištenje repozitorija bez ikakvih restrikcija osim da obavijest o autorskim pravima i dopuštenjima navedenim u licenciji mora biti uključena u sve kopije ili znatne dijelove repozitorija.
+            </p>
+            <br/><br/>
+        </div>
+        <h2 style="margin-left:50px;">Podaci</h2>
+        <form onsubmit="getSearchResult();return false">
+            <select id="attribute">
+                <option>Sva polja (wild card)</option>
+                <option>Name</option>
+                <option>Ease of preparation</option>
+                <option>Type</option>
+                <option>Web source</option>
+            </select>
+            <input type="text" id="searchValue">
+            <input type="submit" value="Search">
+        </form>
+        <div class="export">
+            <a onclick="saveJson()">Export to JSON</a>
+            <a onclick="saveCsv()">Export to CSV</a>
+        </div>
+        <table id="table"></table>
+    </body>
+</html>

@@ -18,8 +18,18 @@
 				"responses": {
 					"200": {
 						"description": "OK",
-						"schema": {
-							"$ref": "http://localhost:8080/recipes"
+						"content": {
+							"application/json": {
+								"schema": {
+								    "type": "array",
+										"properties": {
+											"Recipe": {
+												"type": "object"
+											}
+										}
+									}
+								}
+							}
 						}
 					}
 				}
@@ -42,7 +52,20 @@
 				],
 				"responses": {
 					"201": {
-						"description": "Created"
+						"description": "Created",
+						"content": {
+							"application/json": {
+								"schema": {
+								    "type": "object",
+										"properties": {
+											"Recipe": {
+												"type": "object"
+											}
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -66,8 +89,18 @@
 				"responses": {
 					"200": {
 						"description": "OK",
-						"schema": {
-							"$ref": "http://localhost:8080/recipes"
+						"content": {
+							"application/json": {
+								"schema": {
+								    "type": "object",
+										"properties": {
+											"Recipe": {
+												"type": "object"
+											}
+										}
+									}
+								}
+							}
 						}
 					},
 					"404": {
@@ -89,8 +122,18 @@
 				"responses": {
 					"200": {
 						"description": "OK",
-						"schema": {
-							"$ref": "http://localhost:8080/recipes"
+						"content": {
+							"application/json": {
+								"schema": {
+								    "type": "object",
+										"properties": {
+											"Recipe": {
+												"type": "object"
+											}
+										}
+									}
+								}
+							}
 						}
 					}
 				}
